@@ -5,6 +5,8 @@ const TTSPanel = ({ latestEvent }) => {
     const [enabled, setEnabled] = useState(false);
     const [readChat, setReadChat] = useState(true);
     const [readGift, setReadGift] = useState(true);
+    const [chatMode, setChatMode] = useState('full'); // 'full' or 'msg'
+    const [giftMode, setGiftMode] = useState('full'); // 'full' or 'gift'
     const [volume, setVolume] = useState(0.8);
     const queueRef = useRef([]);
     const speakingRef = useRef(false);
@@ -42,9 +44,14 @@ const TTSPanel = ({ latestEvent }) => {
         if (shouldSpeak) {
             let text = '';
             if (latestEvent.type === 'chat') {
-                text = `${latestEvent.nickname} บอกว่า ${latestEvent.message}`;
+                text = chatMode === 'full' 
+                    ? `${latestEvent.nickname} บอกว่า ${latestEvent.message}`
+                    : `${latestEvent.message}`;
             } else if (latestEvent.type === 'gift') {
-                text = `ขอบคุณ ${latestEvent.nickname} สำหรับ ${latestEvent.giftName} ${latestEvent.count > 1 ? latestEvent.count + ' ชิ้น' : ''}`;
+                const countText = latestEvent.count > 1 ? ` ${latestEvent.count} ชิ้น` : '';
+                text = giftMode === 'full'
+                    ? `ขอบคุณ ${latestEvent.nickname} สำหรับ ${latestEvent.giftName}${countText}`
+                    : `${latestEvent.giftName}${countText}`;
             }
 
             queueRef.current.push(text);
@@ -173,29 +180,56 @@ const TTSPanel = ({ latestEvent }) => {
                     </div>
                 </div>
 
-                <div className="flex gap-2">
-                    <label className="flex items-center gap-2 cursor-pointer group">
-                        <input
-                            type="checkbox"
-                            checked={readChat}
-                            onChange={() => setReadChat(!readChat)}
-                            className="hidden"
-                        />
-                        <div className={`p-1.5 rounded-md transition-colors ${readChat ? 'bg-brand-blue/20 text-brand-blue' : 'bg-slate-800 text-slate-600'}`}>
-                            <MessageSquare size={14} />
-                        </div>
-                    </label>
-                    <label className="flex items-center gap-2 cursor-pointer group">
-                        <input
-                            type="checkbox"
-                            checked={readGift}
-                            onChange={() => setReadGift(!readGift)}
-                            className="hidden"
-                        />
-                        <div className={`p-1.5 rounded-md transition-colors ${readGift ? 'bg-brand-pink/20 text-brand-pink' : 'bg-slate-800 text-slate-600'}`}>
-                            <Gift size={14} />
-                        </div>
-                    </label>
+                <div className="flex gap-4">
+                    <div className="flex flex-col gap-1">
+                        <label className="flex items-center gap-2 cursor-pointer group">
+                            <input
+                                type="checkbox"
+                                checked={readChat}
+                                onChange={() => setReadChat(!readChat)}
+                                className="hidden"
+                            />
+                            <div className={`p-1.5 rounded-md transition-colors flex items-center gap-2 ${readChat ? 'bg-brand-blue/20 text-brand-blue' : 'bg-slate-800 text-slate-600'}`}>
+                                <MessageSquare size={14} />
+                                <span className="text-[10px] font-bold">Chat</span>
+                            </div>
+                        </label>
+                        {readChat && (
+                            <select 
+                                value={chatMode} 
+                                onChange={(e) => setChatMode(e.target.value)}
+                                className="bg-slate-800 text-[8px] text-slate-400 border-none rounded px-1 py-0.5 outline-none"
+                            >
+                                <option value="full">ชื่อ + ข้อความ</option>
+                                <option value="msg">ข้อความอย่างเดียว</option>
+                            </select>
+                        )}
+                    </div>
+
+                    <div className="flex flex-col gap-1">
+                        <label className="flex items-center gap-2 cursor-pointer group">
+                            <input
+                                type="checkbox"
+                                checked={readGift}
+                                onChange={() => setReadGift(!readGift)}
+                                className="hidden"
+                            />
+                            <div className={`p-1.5 rounded-md transition-colors flex items-center gap-2 ${readGift ? 'bg-brand-pink/20 text-brand-pink' : 'bg-slate-800 text-slate-600'}`}>
+                                <Gift size={14} />
+                                <span className="text-[10px] font-bold">Gift</span>
+                            </div>
+                        </label>
+                        {readGift && (
+                            <select 
+                                value={giftMode} 
+                                onChange={(e) => setGiftMode(e.target.value)}
+                                className="bg-slate-800 text-[8px] text-slate-400 border-none rounded px-1 py-0.5 outline-none"
+                            >
+                                <option value="full">ชื่อ + ของขวัญ</option>
+                                <option value="gift">ของขวัญอย่างเดียว</option>
+                            </select>
+                        )}
+                    </div>
                 </div>
             </div>
         </div>
