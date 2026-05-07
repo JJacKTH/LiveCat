@@ -108,7 +108,7 @@ const App = () => {
 
             <footer className="mt-2 flex justify-between items-center text-[8px] text-slate-600 font-bold uppercase tracking-widest">
                 <span>© 2026 LiveCat</span>
-                <span className="text-slate-700">v1.0.0</span>
+                <span className="text-slate-700">v1.0.1</span>
             </footer>
 
             {/* Toast Notification */}

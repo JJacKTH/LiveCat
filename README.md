@@ -1,6 +1,6 @@
 # LiveCat 🐱 - TikTok LIVE Chat Reader
 
-![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)
+![Version](https://img.shields.io/badge/version-1.0.1-blue.svg)
 [![Download LiveCat](https://img.shields.io/badge/Download-LiveCat-brightgreen?style=for-the-badge&logo=windows)](https://github.com/JJacKTH/LiveCat/releases/latest)
 
 ![LiveCat Banner](src/renderer/public/branding/banner.png)

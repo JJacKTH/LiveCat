@@ -118,7 +118,7 @@ const TTSPanel = ({ latestEvent }) => {
     };
 
     return (
-        <div className={`glass-card px-4 py-2 rounded-lg flex flex-col gap-2 mb-4 border-l-2 transition-all duration-300 ${isSpeaking ? 'border-brand-blue shadow-[0_0_15px_rgba(59,130,246,0.2)]' : 'border-brand-purple'}`}>
+        <div className={`glass-card px-4 py-3 rounded-lg flex flex-col gap-3 mb-4 border-l-2 transition-all duration-300 ${isSpeaking ? 'border-brand-blue shadow-[0_0_15px_rgba(59,130,246,0.2)]' : 'border-brand-purple'}`}>
             <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
                     <div className="relative">
@@ -151,9 +151,8 @@ const TTSPanel = ({ latestEvent }) => {
                             <select 
                                 value={selectedVoice || ''} 
                                 onChange={(e) => setSelectedVoice(e.target.value)}
-                                className="bg-transparent text-[9px] text-slate-500 border-none p-0 cursor-pointer focus:ring-0 outline-none hover:text-slate-300"
+                                className="bg-transparent text-[9px] text-slate-500 border-none p-0 cursor-pointer focus:ring-0 outline-none hover:text-slate-300 max-w-[120px] truncate"
                             >
-                                <option value="">Auto Detect Voice</option>
                                 {voices.filter(v => v.lang.includes('th') || v.name.includes('Thai')).map(v => (
                                     <option key={v.name} value={v.name} className="bg-slate-900 text-white">{v.name}</option>
                                 ))}
@@ -164,7 +163,7 @@ const TTSPanel = ({ latestEvent }) => {
                                 </optgroup>
                             </select>
                             
-                            <div className="flex items-center gap-2 group/vol">
+                            <div className="flex items-center gap-2 group/vol flex-grow ml-2">
                                 <Volume2 size={10} className="text-slate-500 group-hover/vol:text-slate-300" />
                                 <input 
                                     type="range" 
@@ -173,63 +172,64 @@ const TTSPanel = ({ latestEvent }) => {
                                     step="0.1" 
                                     value={volume} 
                                     onChange={(e) => setVolume(parseFloat(e.target.value))}
-                                    className="w-16 h-1 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-brand-purple"
+                                    className="flex-grow h-1 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-brand-purple"
                                 />
+                                <span className="text-[9px] text-slate-500 font-mono w-6 text-right">{Math.round(volume * 100)}%</span>
                             </div>
                         </div>
                     </div>
                 </div>
+            </div>
 
-                <div className="flex gap-4">
-                    <div className="flex flex-col gap-1">
-                        <label className="flex items-center gap-2 cursor-pointer group">
-                            <input
-                                type="checkbox"
-                                checked={readChat}
-                                onChange={() => setReadChat(!readChat)}
-                                className="hidden"
-                            />
-                            <div className={`p-1.5 rounded-md transition-colors flex items-center gap-2 ${readChat ? 'bg-brand-blue/20 text-brand-blue' : 'bg-slate-800 text-slate-600'}`}>
-                                <MessageSquare size={14} />
-                                <span className="text-[10px] font-bold">Chat</span>
-                            </div>
-                        </label>
-                        {readChat && (
-                            <select 
-                                value={chatMode} 
-                                onChange={(e) => setChatMode(e.target.value)}
-                                className="bg-slate-800 text-[8px] text-slate-400 border-none rounded px-1 py-0.5 outline-none"
-                            >
-                                <option value="full">ชื่อ + ข้อความ</option>
-                                <option value="msg">ข้อความอย่างเดียว</option>
-                            </select>
-                        )}
-                    </div>
+            <div className="flex gap-4 border-t border-slate-700/30 pt-2 mt-1">
+                <div className="flex items-center gap-2 flex-grow">
+                    <label className="flex items-center gap-2 cursor-pointer group">
+                        <input
+                            type="checkbox"
+                            checked={readChat}
+                            onChange={() => setReadChat(!readChat)}
+                            className="hidden"
+                        />
+                        <div className={`p-1 px-2 rounded-md transition-colors flex items-center gap-2 ${readChat ? 'bg-brand-blue/20 text-brand-blue' : 'bg-slate-800 text-slate-600'}`}>
+                            <MessageSquare size={12} />
+                            <span className="text-[10px] font-bold">Chat</span>
+                        </div>
+                    </label>
+                    {readChat && (
+                        <select 
+                            value={chatMode} 
+                            onChange={(e) => setChatMode(e.target.value)}
+                            className="bg-slate-800/50 text-[10px] text-slate-400 border-none rounded px-2 py-1 outline-none cursor-pointer hover:bg-slate-800 transition-colors"
+                        >
+                            <option value="full">ชื่อ + ข้อความ</option>
+                            <option value="msg">ข้อความอย่างเดียว</option>
+                        </select>
+                    )}
+                </div>
 
-                    <div className="flex flex-col gap-1">
-                        <label className="flex items-center gap-2 cursor-pointer group">
-                            <input
-                                type="checkbox"
-                                checked={readGift}
-                                onChange={() => setReadGift(!readGift)}
-                                className="hidden"
-                            />
-                            <div className={`p-1.5 rounded-md transition-colors flex items-center gap-2 ${readGift ? 'bg-brand-pink/20 text-brand-pink' : 'bg-slate-800 text-slate-600'}`}>
-                                <Gift size={14} />
-                                <span className="text-[10px] font-bold">Gift</span>
-                            </div>
-                        </label>
-                        {readGift && (
-                            <select 
-                                value={giftMode} 
-                                onChange={(e) => setGiftMode(e.target.value)}
-                                className="bg-slate-800 text-[8px] text-slate-400 border-none rounded px-1 py-0.5 outline-none"
-                            >
-                                <option value="full">ชื่อ + ของขวัญ</option>
-                                <option value="gift">ของขวัญอย่างเดียว</option>
-                            </select>
-                        )}
-                    </div>
+                <div className="flex items-center gap-2 flex-grow">
+                    <label className="flex items-center gap-2 cursor-pointer group">
+                        <input
+                            type="checkbox"
+                            checked={readGift}
+                            onChange={() => setReadGift(!readGift)}
+                            className="hidden"
+                        />
+                        <div className={`p-1 px-2 rounded-md transition-colors flex items-center gap-2 ${readGift ? 'bg-brand-pink/20 text-brand-pink' : 'bg-slate-800 text-slate-600'}`}>
+                            <Gift size={12} />
+                            <span className="text-[10px] font-bold">Gift</span>
+                        </div>
+                    </label>
+                    {readGift && (
+                        <select 
+                            value={giftMode} 
+                            onChange={(e) => setGiftMode(e.target.value)}
+                            className="bg-slate-800/50 text-[10px] text-slate-400 border-none rounded px-2 py-1 outline-none cursor-pointer hover:bg-slate-800 transition-colors"
+                        >
+                            <option value="full">ชื่อ + ของขวัญ</option>
+                            <option value="gift">ของขวัญอย่างเดียว</option>
+                        </select>
+                    )}
                 </div>
             </div>
         </div>

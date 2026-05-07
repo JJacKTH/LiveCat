@@ -1,6 +1,6 @@
 {
   "name": "livecat",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "TikTok LIVE Chat Reader for Streamers",
   "type": "module",
   "main": "src/main/main.js",
