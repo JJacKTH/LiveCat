@@ -1,6 +1,9 @@
 # LiveCat 🐱 - TikTok LIVE Chat Reader
 
-![LiveCat Banner](./public/assets/banner.png)
+![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)
+[![Download LiveCat](https://img.shields.io/badge/Download-LiveCat-brightgreen?style=for-the-badge&logo=windows)](https://github.com/JJacKTH/LiveCat/releases/latest)
+
+![LiveCat Banner](src/renderer/public/branding/banner.png)
 
 **LiveCat** is a professional, cute, and high-performance Windows application designed for TikTok streamers. It allows you to read your LIVE chat, gifts, joins, and likes in real-time with built-in Text-to-Speech (TTS) and a customizable overlay for OBS/TikTok Live Studio.
 
@@ -16,7 +19,9 @@
 ## 🚀 Quick Start
 
 ### Installation
-1. Download the latest `LiveCat-Setup.exe` or `LiveCat-Portable.exe` from the releases page.
+1. Download the latest version from the [Releases](https://github.com/JJacKTH/LiveCat/releases) page.
+   - `LiveCat Setup 1.0.0.exe` (Installer)
+   - `LiveCat 1.0.0.exe` (Portable)
 2. Run the application.
 3. Enter your TikTok username (e.g., `@mychannel`).
 4. Click **Connect**.
@@ -62,13 +67,13 @@ npm run portable
 ---
 
 ### 🐱 Join the Community
-Follow for updates and report bugs on the [GitHub Issues](https://github.com/USERNAME/livecat/issues) page.
+Follow for updates and report bugs on the [GitHub Issues](https://github.com/JJacKTH/livecat/issues) page.
 
 ```bash
 git init
 git add .
 git commit -m "Initial commit: LiveCat TikTok LIVE chat reader"
 git branch -M main
-git remote add origin https://github.com/USERNAME/livecat.git
+git remote add origin https://github.com/JJacKTH/livecat.git
 git push -u origin main
 ```
