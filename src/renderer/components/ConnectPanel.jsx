@@ -1,10 +1,14 @@
 import React, { useState } from 'react';
 import { Play, Square, RefreshCcw, Trash2, Monitor, Pin } from 'lucide-react';
 
-const ConnectPanel = ({ status, viewerCount, onConnect, onDisconnect, onClearChat, onToggleOverlay, onToggleAlwaysOnTop }) => {
-    const [username, setUsername] = useState('');
+const ConnectPanel = ({ status, viewerCount, onConnect, onDisconnect, onClearChat, onToggleOverlay, onToggleAlwaysOnTop, autoReconnect, setAutoReconnect }) => {
+    const [username, setUsername] = useState(localStorage.getItem('livecat_username') || '');
     const [alwaysOnTop, setAlwaysOnTop] = useState(false);
     const [cooldown, setCooldown] = useState(0);
+
+    React.useEffect(() => {
+        localStorage.setItem('livecat_username', username);
+    }, [username]);
 
     React.useEffect(() => {
         if (cooldown > 0) {
@@ -80,6 +84,13 @@ const ConnectPanel = ({ status, viewerCount, onConnect, onDisconnect, onClearCha
                             <Monitor size={10} /> {viewerCount || 0}
                         </span>
                     )}
+                    <button 
+                        onClick={() => setAutoReconnect(!autoReconnect)}
+                        className={`ml-2 px-2 py-0.5 rounded text-[9px] font-black uppercase transition-all ${autoReconnect ? 'bg-brand-purple/20 text-brand-purple' : 'bg-slate-800 text-slate-600'}`}
+                        title="Auto Reconnect when disconnected"
+                    >
+                        Auto: {autoReconnect ? 'ON' : 'OFF'}
+                    </button>
                 </div>
 
                 <div className="flex items-center gap-1">

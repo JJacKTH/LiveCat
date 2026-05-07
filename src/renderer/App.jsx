@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import ConnectPanel from './components/ConnectPanel';
 import ChatFeed from './components/ChatFeed';
 import TTSPanel from './components/TTSPanel';
@@ -9,6 +9,9 @@ const App = () => {
     const [events, setEvents] = useState([]);
     const [latestEvent, setLatestEvent] = useState(null);
     const [toast, setToast] = useState(null);
+    const [autoReconnect, setAutoReconnect] = useState(localStorage.getItem('livecat_auto_reconnect') !== 'false');
+    const [updateInfo, setUpdateInfo] = useState(null);
+    const reconnectTimerRef = useRef(null);
 
     const showToast = (message, type = 'info') => {
         setToast({ message, type });
@@ -21,11 +24,39 @@ const App = () => {
             setStatus(newStatus);
             if (newStatus === 'connected') {
                 showToast('Connected to TikTok Successfully!', 'success');
+                if (reconnectTimerRef.current) {
+                    clearTimeout(reconnectTimerRef.current);
+                    reconnectTimerRef.current = null;
+                }
             } else if (newStatus === 'error') {
                 showToast(`Error: ${error || 'Connection Failed'}`, 'error');
                 console.error('TikTok Connection Error:', error);
+                
+                // Auto-reconnect logic (60s delay to prevent spam)
+                if (autoReconnect && error !== "ไม่พบชื่อผู้ใช้งานนี้ กรุณาตรวจสอบอีกครั้ง (User not found)") {
+                    const savedUsername = localStorage.getItem('livecat_username');
+                    if (savedUsername && !reconnectTimerRef.current) {
+                        showToast('Reconnecting in 60s...', 'info');
+                        reconnectTimerRef.current = setTimeout(() => {
+                            reconnectTimerRef.current = null;
+                            window.electronAPI.connect(savedUsername);
+                        }, 60000);
+                    }
+                }
             } else if (newStatus === 'disconnected') {
                 showToast('Disconnected from TikTok', 'info');
+                
+                // Auto-reconnect logic (60s delay to prevent spam)
+                if (autoReconnect) {
+                    const savedUsername = localStorage.getItem('livecat_username');
+                    if (savedUsername && !reconnectTimerRef.current) {
+                        showToast('Auto-reconnecting in 60s...', 'info');
+                        reconnectTimerRef.current = setTimeout(() => {
+                            reconnectTimerRef.current = null;
+                            window.electronAPI.connect(savedUsername);
+                        }, 60000);
+                    }
+                }
             }
         });
 
@@ -38,13 +69,44 @@ const App = () => {
             setLatestEvent(data);
         });
 
+        // Check for updates
+        const checkUpdates = async () => {
+            try {
+                const response = await fetch('https://api.github.com/repos/JJacKTH/LiveCat/releases/latest');
+                if (response.ok) {
+                    const data = await response.json();
+                    const latestVersion = data.tag_name.replace('v', '');
+                    const currentVersion = '1.0.2';
+                    
+                    if (latestVersion !== currentVersion) {
+                        setUpdateInfo({
+                            version: latestVersion,
+                            url: data.html_url
+                        });
+                        showToast(`New Version Available: v${latestVersion}`, 'info');
+                    }
+                }
+            } catch (err) {
+                console.error('Failed to check for updates:', err);
+            }
+        };
+        checkUpdates();
+
         // Cleanup listeners
         return () => {
             // Note: In a real app, we should properly remove listeners if electronAPI supports it
         };
-    }, []);
+    }, [autoReconnect]);
+
+    useEffect(() => {
+        localStorage.setItem('livecat_auto_reconnect', autoReconnect);
+    }, [autoReconnect]);
 
     const handleConnect = useCallback((username) => {
+        if (reconnectTimerRef.current) {
+            clearTimeout(reconnectTimerRef.current);
+            reconnectTimerRef.current = null;
+        }
         window.electronAPI.connect(username);
     }, []);
 
@@ -99,6 +161,8 @@ const App = () => {
                     onClearChat={handleClearChat}
                     onToggleOverlay={handleToggleOverlay}
                     onToggleAlwaysOnTop={handleToggleAlwaysOnTop}
+                    autoReconnect={autoReconnect}
+                    setAutoReconnect={setAutoReconnect}
                 />
                 
                 <TTSPanel latestEvent={latestEvent} />
@@ -108,7 +172,19 @@ const App = () => {
 
             <footer className="mt-2 flex justify-between items-center text-[8px] text-slate-600 font-bold uppercase tracking-widest">
                 <span>© 2026 LiveCat</span>
-                <span className="text-slate-700">v1.0.1</span>
+                <div className="flex items-center gap-2">
+                    {updateInfo && (
+                        <a 
+                            href={updateInfo.url} 
+                            target="_blank" 
+                            rel="noopener noreferrer"
+                            className="text-brand-purple hover:text-brand-blue transition-colors flex items-center gap-1"
+                        >
+                            <span className="animate-pulse">●</span> NEW UPDATE v{updateInfo.version}
+                        </a>
+                    )}
+                    <span className="text-slate-700">v1.0.2</span>
+                </div>
             </footer>
 
             {/* Toast Notification */}

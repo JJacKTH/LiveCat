@@ -83,6 +83,9 @@ export default class TikTokConnector {
             giftIcon: data.giftPictureUrl || null,
             emojis: data.emojis || [],
             count: data.repeatCount || 1,
+            repeatEnd: data.repeatEnd,
+            diamondCount: data.diamondCount || 0,
+            groupId: data.groupId,
             timestamp: Date.now()
         };
 
