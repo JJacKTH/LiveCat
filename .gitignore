@@ -1,0 +1,22 @@
+# Node
+node_modules/
+dist/
+dist_electron/
+*.log
+
+# Electron
+*.exe
+*.dmg
+*.AppImage
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+
+# Environment
+.env
+.env.local

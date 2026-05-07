@@ -1,0 +1,36 @@
+{
+  "name": "livecat",
+  "version": "1.0.0",
+  "description": "TikTok LIVE Chat Reader for Streamers",
+  "type": "module",
+  "main": "src/main/main.js",
+  "author": "LiveCat Team",
+  "license": "MIT",
+  "scripts": {
+    "dev": "concurrently \"vite\" \"wait-on http://localhost:3033 && electron .\"",
+    "electron": "electron .",
+    "build": "vite build && electron-builder build --config electron-builder.json",
+    "dist": "vite build && electron-builder build --config electron-builder.json",
+    "dist:win": "vite build && electron-builder build --win --config electron-builder.json",
+    "portable": "vite build && electron-builder build --win portable --config electron-builder.json",
+    "assets": "node scripts/generate-assets.js"
+  },
+  "dependencies": {
+    "electron-store": "^8.1.0",
+    "tiktok-live-connector": "^1.2.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.2.0",
+    "autoprefixer": "^10.4.17",
+    "concurrently": "^9.2.1",
+    "electron": "^28.0.0",
+    "electron-builder": "^24.9.1",
+    "lucide-react": "^0.321.0",
+    "postcss": "^8.4.35",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "tailwindcss": "^3.4.1",
+    "vite": "^5.0.0",
+    "wait-on": "^9.0.5"
+  }
+}
