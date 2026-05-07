@@ -4,10 +4,17 @@ import { Play, Square, RefreshCcw, Trash2, Monitor, Pin } from 'lucide-react';
 const ConnectPanel = ({ status, viewerCount, onConnect, onDisconnect, onClearChat, onToggleOverlay, onToggleAlwaysOnTop }) => {
     const [username, setUsername] = useState('');
     const [alwaysOnTop, setAlwaysOnTop] = useState(false);
+    const [isCooldown, setIsCooldown] = useState(false);
 
     const handleConnect = () => {
-        if (username.trim()) {
+        if (username.trim() && !isCooldown) {
+            setIsCooldown(true);
             onConnect(username);
+            
+            // Set 10 seconds cooldown
+            setTimeout(() => {
+                setIsCooldown(false);
+            }, 10000);
         }
     };
 
@@ -33,14 +40,23 @@ const ConnectPanel = ({ status, viewerCount, onConnect, onDisconnect, onClearCha
 
                 <button 
                     onClick={status === 'connected' ? onDisconnect : handleConnect} 
-                    className={`px-4 py-2 rounded-lg font-bold text-sm transition-all flex items-center gap-2 shadow-lg ${
+                    disabled={isCooldown && status !== 'connected'}
+                    className={`px-4 py-2 rounded-lg font-bold text-sm transition-all flex items-center gap-2 shadow-lg min-w-[80px] justify-center ${
                         status === 'connected' 
                         ? 'bg-red-500/20 text-red-400 hover:bg-red-500/30' 
-                        : 'bg-brand-purple text-white hover:bg-brand-purple/80 shadow-brand-purple/20'
+                        : isCooldown 
+                            ? 'bg-slate-700 text-slate-500 cursor-not-allowed opacity-70'
+                            : 'bg-brand-purple text-white hover:bg-brand-purple/80 shadow-brand-purple/20'
                     }`}
                 >
-                    {status === 'connected' ? <Square size={14} fill="currentColor" /> : <Play size={14} fill="currentColor" />}
-                    {status === 'connected' ? 'Stop' : 'Go'}
+                    {isCooldown && status !== 'connected' ? (
+                        <RefreshCcw size={14} className="animate-spin" />
+                    ) : status === 'connected' ? (
+                        <Square size={14} fill="currentColor" />
+                    ) : (
+                        <Play size={14} fill="currentColor" />
+                    )}
+                    {status === 'connected' ? 'Stop' : isCooldown ? 'Wait...' : 'Go'}
                 </button>
             </div>
 
